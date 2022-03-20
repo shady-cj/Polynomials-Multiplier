@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="index.css" />
+        <script src="index.js" defer></script>
+        <title>Polynomials Multiplier</title>
+    </head>
+    <body>
+        <h1>Multiply Polynomial Expressions</h1>
+        <main>
+            <div class="input-wrapper">
+                What is the degree of the first Polynomial ?:
+                <input id="p1" type="text" />
+            </div>
+            <div class="input-wrapper">
+                What is the degree of the second Polynomial ?:
+                <input id="p2" type="text" />
+            </div>
+
+            <button id="compute">Start Computing</button>
+        </main>
+        <section class="layout-wrapper">
+            <div id="info-block">
+                Write The coefficients of the corresponding power of x in the
+                table below
+            </div>
+            <div class="poly-table-wrapper">
+                <div class="caption">First Polynomial</div>
+                <table id="poly1Layout"></table>
+            </div>
+
+            <div class="poly-table-wrapper">
+                <div class="caption">Second Polynomial</div>
+                <table id="poly2Layout"></table>
+            </div>
+        </section>
+
+        <div class="result-div" style="display: none">
+            <button id="result">Result</button>
+            <div id="result-renderer"></div>
+        </div>
+    </body>
+</html>
