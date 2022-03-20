@@ -14,8 +14,8 @@ computeBtn.addEventListener("click", (e) => {
     }
 
     if (!isNaN(numOfP1.value) && !isNaN(numOfP2.value)) {
-        let numVal1 = Math.floor(Number(numOfP1.value));
-        let numVal2 = Math.floor(Number(numOfP2.value));
+        let numVal1 = Math.abs(Math.floor(Number(numOfP1.value)));
+        let numVal2 = Math.abs(Math.floor(Number(numOfP2.value)));
         polyLayout(numVal1, poly1Table, "First Polynomial");
         polyLayout(numVal2, poly2Table, "Second Polynomial");
         resultDiv.style.display = "block";
