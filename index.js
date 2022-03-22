@@ -31,7 +31,7 @@ resultBtn.addEventListener("click", (e) => {
     let poly1Array = convertCellsToArray(firstPolyInputs);
     let poly2Array = convertCellsToArray(secondPolyInputs);
     if (!poly1Array || !poly2Array) {
-        alert("All cells must be filled");
+        alert("All cells must be filled correctly!");
     } else {
         let polyProduct = multiply_optimized(poly1Array, poly2Array);
         let input1 = formatOutput(poly1Array);
