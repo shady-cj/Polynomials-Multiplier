@@ -33,7 +33,7 @@ resultBtn.addEventListener("click", (e) => {
     if (!poly1Array || !poly2Array) {
         alert("All cells must be filled");
     } else {
-        let polyProduct = polynomialMultiplier(poly1Array, poly2Array);
+        let polyProduct = multiply_optimized(poly1Array, poly2Array);
         let input1 = formatOutput(poly1Array);
         let input2 = formatOutput(poly2Array);
         let result = formatOutput(polyProduct);
@@ -86,25 +86,118 @@ const convertCellsToArray = (dataElem) => {
     return dataArr;
 };
 
-const polynomialMultiplier = (poly1, poly2) => {
-    let p = [];
-    const lenOfP = parseInt(poly1.length + poly2.length - 1);
-    k = 0;
+// Using O(N^2)
 
-    do {
-        let sumOfProducts = 0;
-        for (let i = 0; i < poly1.length; i++) {
-            for (let j = 0; j < poly2.length; j++) {
-                if (i + j === k) {
-                    sumOfProducts += poly1[i] * poly2[j];
-                    break;
-                }
-            }
+// const polynomialMultiplier = (poly1, poly2) => {
+//     let p = [];
+//     const lenOfP = parseInt(poly1.length + poly2.length - 1);
+//     k = 0;
+
+//     do {
+//         let sumOfProducts = 0;
+//         for (let i = 0; i < poly1.length; i++) {
+//             for (let j = 0; j < poly2.length; j++) {
+//                 if (i + j === k) {
+//                     sumOfProducts += poly1[i] * poly2[j];
+//                     break;
+//                 }
+//             }
+//         }
+//         p.push(sumOfProducts);
+//         k++;
+//     } while (k < lenOfP);
+
+//     return p;
+// };
+
+// Using ~0(N Log N)
+const multiply_optimized = (poly1, poly2, first = true) => {
+    let numOfPoly1 = poly1.length;
+    let numOfPoly2 = poly2.length;
+
+    result = [];
+    if (numOfPoly1 > 1 || numOfPoly2 > 1) {
+        let n, k, A0B0, A1B1, productOfSumAB, differenceOfProductAB;
+        // n to find the maximum of the 2 polynomials to determine the length of the longest list
+        n = Math.max(numOfPoly1, numOfPoly2);
+        // getting the half
+        k = Math.floor(n / 2);
+
+        //  We split the array into 2 halves
+        let [A, B] = split(poly1, poly2);
+        //  destructuring A0, A1,B0, B1
+        let [A0, A1] = A;
+        let [B0, B1] = B;
+
+        //  We find the value of A0B0 and A1B1 recursively
+        A0B0 = multiply_optimized(A0, B0, false);
+        A1B1 = multiply_optimized(A1, B1, false);
+        // we find the product of (A0+A1)*(B0+B1)
+        productOfSumAB = multiply_optimized(add(A0, A1), add(B0, B1), false);
+        // subract from A0B0 and A1B1 to get ((A0+A1)*(B0+B1) - A0B0 - A1B1)
+        differenceOfProductAB = subtract(subtract(productOfSumAB, A0B0), A1B1);
+        result = add(
+            add(A0B0, increase_exponent(differenceOfProductAB, k)),
+            increase_exponent(A1B1, 2 * k)
+        );
+        //  remove all 0s
+        if (first) {
+            lenDiff = Math.abs(numOfPoly1 - numOfPoly2) - 1;
+
+            if (lenDiff > 0) result = result.slice(0, -lenDiff);
         }
-        p.push(sumOfProducts);
-        k++;
-    } while (k < lenOfP);
-    return p;
+    } else if (numOfPoly1 == 1 && numOfPoly2 == 1) {
+        result.push(poly1[0] * poly2[0]);
+    } else {
+        result = [];
+    }
+    return result;
+};
+
+const add = (poly1, poly2) => {
+    // Add two polynomials
+    let lengthOfArr = Math.max(poly1.length, poly2.length);
+    let result = new Array(lengthOfArr).fill(0);
+
+    for (let i = 0; i < result.length; i++) {
+        if (i < poly1.length) {
+            result[i] += poly1[i];
+        }
+        if (i < poly2.length) {
+            result[i] += poly2[i];
+        }
+    }
+    return result;
+};
+
+const subtract = (poly1, poly2) => {
+    // subtract two polynomials
+    let lengthOfArr = Math.max(poly1.length, poly2.length);
+    let result = new Array(lengthOfArr).fill(0);
+
+    for (let i = 0; i < result.length; i++) {
+        if (i < poly1.length) {
+            result[i] += poly1[i];
+        }
+        if (i < poly2.length) {
+            result[i] -= poly2[i];
+        }
+    }
+    return result;
+};
+
+const split = (poly1, poly2) => {
+    let mid = Math.floor(Math.max(poly1.length, poly2.length) / 2);
+
+    return [
+        [poly1.slice(0, mid), poly1.slice(mid)],
+        [poly2.slice(0, mid), poly2.slice(mid)],
+    ];
+};
+const increase_exponent = (poly, n) => {
+    //    Multiply poly1 by x^n
+    let arr = new Array(n).fill(0);
+    return arr.concat(poly);
 };
 
 const formatOutput = (arr) => {
